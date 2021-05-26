@@ -24,6 +24,8 @@ class Graph:
         self.e = []
         self.g = [[] for i in range(n+1)]
 
+        self.reachable = set()
+
     def add_edge(self, a, b, capacity):
         e1 = Edge(a, b, capacity)
         e2 = Edge(b, a)
@@ -81,3 +83,21 @@ class Graph:
                 flow += pushed
                 pushed = self.dfs(self.s, math.inf)
         return flow
+
+    def simple_dfs(self, v):
+        self.reachable[v] = 1
+        ptr = 0
+        while ptr < len(self.g[v]):
+            edge_id = self.g[v][ptr]
+            to = self.e[edge_id].b
+            flow = self.e[edge_id].flow
+            cap = self.e[edge_id].cap
+            if 0 < flow < cap and not self.reachable[to]:
+                self.simple_dfs(to)
+            ptr += 1
+        return 0
+
+    def min_cut(self):
+        self.reachable = [0 for i in range(self.n)]
+        self.simple_dfs(self.s)
+        return self.reachable[:-2]
