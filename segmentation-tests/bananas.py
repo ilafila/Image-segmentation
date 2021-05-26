@@ -32,7 +32,7 @@ def generate_banana1_scribbles():
     return obj, bkg
 
 
-def test_banana_1():
+def make_banana_1():
     img = mpimg.imread('../images-320/banana1-gr-320.jpg')
     obj_scribble, bkg_scribble = generate_banana1_scribbles()
     underlying_graph = image2graph(img, obj_scribble, bkg_scribble)
@@ -51,4 +51,23 @@ def test_banana_1():
     bin_img.save('../images-segments-prediction-320/banana1-ans.jpg', 'JPEG')
 
 
-test_banana_1()
+def analysis_banana_1():
+    true_segments = mpimg.imread('../image-segments-320/banana1-320.jpg')[:, :, :1].flatten().reshape((240, 320))
+    predicted_segments = mpimg.imread('../images-segments-prediction-320/banana1-ans.jpg')
+    correct = 0
+    intercept = 0
+    union = 0
+    for i in range(240):
+        for j in range(320):
+            if abs(int(true_segments[i][j]) - int(predicted_segments[i][j])) < 10:
+                correct += 1
+            if true_segments[i][j] < 20 or predicted_segments[i][j] < 20:
+                union += 1
+            if true_segments[i][j] < 20 and predicted_segments[i][j] < 20:
+                intercept += 1
+    print('Правильно угаданных пикселей: ', correct / (240*320))
+    print('Мера Жаккара: ', intercept/union)
+
+
+make_banana_1()
+analysis_banana_1()

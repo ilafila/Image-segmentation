@@ -1,1 +1,4 @@
 .idea
+venv
+.DS_store
+__python_cache__
