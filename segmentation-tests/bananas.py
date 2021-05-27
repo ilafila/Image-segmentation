@@ -33,29 +33,12 @@ def generate_banana1_scribbles():
     return obj, bkg
 
 
-def make_banana_1():
-    img = mpimg.imread('../images-320/banana1-gr-320.jpg')
-    obj_scribble, bkg_scribble = generate_banana1_scribbles()
-    underlying_graph = image2graph(img, obj_scribble, bkg_scribble)
-    start = time.time()
-    flow = underlying_graph.dinic()
-    one_item = underlying_graph.min_cut()
-    end = time.time()
-    print('Banana1')
-    print('percent of object: ', sum(one_item)/(320*240) * 100)
-    print("Time in seconds", "%.3f" % (end - start))
-    print('Max flow: ', flow)
-    bin_img = Image.new(mode='1', size=(320, 240), color=0)
-    for i, val in enumerate(one_item):
-        if val:
-            bin_img.putpixel((i % 320, i//320), 1)
-    bin_img.save('../images-segments-prediction-320/banana1-ans.jpg', 'JPEG')
-
-
 def make_pixels(image_url):
     img = mpimg.imread('../images-320/' + image_url)
     img_shape = img.shape
+    # TODO switch: different scribbles for different images
     obj_scribble, bkg_scribble = generate_banana1_scribbles()
+
     underlying_graph = image2graph(img, obj_scribble, bkg_scribble)
     start = time.time()
     flow = underlying_graph.dinic()
@@ -100,10 +83,10 @@ def analyze_all():
         predicted_segments = mpimg.imread('../images-segments-prediction-320/'+image_url)
         true_segments = true_segments[:, :, :1].flatten().reshape(predicted_segments.shape)
         correct_pixels, Jaccard = analyze(true_segments, predicted_segments)
+        # TODO write in file too
         print('Правильно угаданных пикселей: ', correct_pixels)
         print('Мера Жаккара: ', Jaccard)
         print('--------------------------------------------------------')
 
 
-# make_banana_2()
 analyze_all()

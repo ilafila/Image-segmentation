@@ -8,6 +8,7 @@ def laplace(x):
     return erf(x/2**0.5)/2
 
 # constants
+# TODO need to analyze for best params
 K = 2
 bins = 25
 step = math.ceil(256 / bins)
