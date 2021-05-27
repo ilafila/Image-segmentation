@@ -1,23 +1,36 @@
 import math
 import numpy as np
+from scipy.special import erf
 from Dinic import Graph
+
+
+def laplace(x):
+    return erf(x/2**0.5)/2
 
 # constants
 K = 2
-bins = 9
+bins = 25
 step = math.ceil(256 / bins)
-lambda_const = 10
-sigma_const = 5
-epsilon = 1e-9
+lambda_const = 200
+sigma_const = 100
+epsilon = 1e-7
 
 
 def generate_probs(img, interest):
     # определяем вероятности попадения в блоки гистограммы
     hist = [0] * bins
+    mu = 0
     for (x, y) in interest:
-        hist[img[x][y] // step] += 1
+        mu += img[x][y]
+    mu /= len(interest)
+    sigma = 0
+    for (x, y) in interest:
+        sigma += (img[x][y] - mu)**2
+    sigma = math.sqrt(sigma / (len(interest)-1))
     for i in range(bins):
-        hist[i] /= len(interest)
+        b = (step*(i+1) - mu) / sigma
+        a = (step*i - mu) / sigma
+        hist[i] = laplace(b) - laplace(a)
     return hist
 
 
