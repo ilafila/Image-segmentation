@@ -1,10 +1,11 @@
+import math
 import numpy as np
 from Dinic import Graph
 
 # constants
 K = 2
 bins = 9
-step = 256 // bins
+step = math.ceil(256 // bins)
 lambda_const = 10
 sigma_const = 5
 epsilon = 1e-9
