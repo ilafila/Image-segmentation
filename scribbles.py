@@ -129,9 +129,71 @@ def generate_scribbles_18():
     bkg += generate_rect((17, 255), 99, 8)
     return obj, bkg
 
+def generate_scribbles_19():
+    obj = generate_rect((55, 175), 4, 19)
+    obj += generate_rect((139, 201), 69, 4)
+    bkg = generate_rect((32, 24), 99, 8)
+    bkg += generate_rect((47, 283), 99, 8)
+    bkg += generate_rect((74, 93), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_20():
+    obj = generate_rect((146, 106), 69, 4)
+    bkg = generate_rect((313, 184), 99, 8)
+    bkg += generate_rect((22, 89), 66, 5)
+    return obj, bkg
+
+def generate_scribbles_21():
+    obj = generate_interval((144, 142), (257, 153), 4)
+    bkg = generate_rect((320, 237), 99, 8)
+    bkg += generate_interval((36, 129), (84, 84), 5)
+    bkg += generate_rect((99, 41), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_22():
+    obj = generate_interval((129, 148), (242, 160), 4)
+    bkg = generate_rect((59, 58), 99, 8)
+    bkg += generate_rect((227, 281), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_23():
+    obj = generate_rect((69, 164), 120, 4)
+    bkg = generate_rect((76, 296), 99, 8)
+    bkg += generate_rect((59, 58), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_24():
+    obj = generate_rect((84, 180), 4, 20)
+    obj += generate_rect((126, 96), 4, 20)
+    bkg = generate_rect((109, 225), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_25():
+    obj = generate_rect((135, 164), 99, 8)
+    bkg = generate_rect((308, 85), 4, 31)
+    return obj, bkg
+
+def generate_scribbles_26():
+    obj = generate_rect((90, 181), 99, 8)
+    bkg = generate_rect((152, 32), 4, 60)
+    return obj, bkg
+
+def generate_scribbles_28():
+    obj = generate_interval((177, 156), (279, 183), 8)
+    bkg = generate_rect((136, 27), 4, 62)
+    return obj, bkg
+
+def generate_scribbles_29():
+    obj = generate_rect((160, 160), 83, 3)
+    bkg = generate_interval((61, 29), (195, 89), 4)
+    return obj, bkg
+
 
 scribbles = [generate_scribbles_0_3, generate_scribbles_0_3, generate_scribbles_0_3, generate_scribbles_0_3,
              generate_scribbles_4, generate_scribbles_5, generate_scribbles_6, generate_scribbles_7,
              generate_scribbles_8, generate_scribbles_9, generate_scribbles_9, generate_scribbles_11,
              generate_scribbles_12, generate_scribbles_13, generate_scribbles_14, generate_scribbles_15,
-             generate_scribbles_16, generate_scribbles_17, generate_scribbles_18]
+             generate_scribbles_16, generate_scribbles_17, generate_scribbles_18, generate_scribbles_19,
+             generate_scribbles_20, generate_scribbles_21, generate_scribbles_22, generate_scribbles_23,
+             generate_scribbles_24, generate_scribbles_25, generate_scribbles_26, generate_scribbles_26,
+             generate_scribbles_28, generate_scribbles_29]
