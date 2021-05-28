@@ -19,11 +19,8 @@ def make_pixels(index, image_url):
     flow = underlying_graph.dinic()
     one_item = underlying_graph.min_cut()
     end = time.time()
-    print(image_url)
     print('percent of object: ', sum(one_item)/(img_shape[1]*img_shape[0]) * 100)
     print("Time in seconds", "%.3f" % (end - start))
-    print('Max flow: ', flow)
-
     bin_img = Image.new(mode='1', size=(img_shape[1], img_shape[0]), color=0)
     for i, val in enumerate(one_item):
         if val:
@@ -79,5 +76,5 @@ def analyze_all():
         print('--------------------------------------------------------')
 
 
-solo_test(29)
+analyze_all()
 
