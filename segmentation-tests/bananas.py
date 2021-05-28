@@ -41,28 +41,30 @@ def generate_interval(a, b, fat=1):
     return interval
 
 
-def generate_banana1_scribbles():
-    # эмитирует то, что мы отметили как фон и обьект
+def generate_scribbles_0_3():
     obj = generate_interval((130, 50), (165, 200), 5)
-    # for i in range(150, 185):
-    #     obj.append((i, 50 + 2 * (i - 150)))
-    #     obj.append((i, 50 + 2 * (i - 150) + 1))
-    #     obj.append((i, 50 + 2 * (i - 150) + 2))
-    #     obj.append((i, 50 + 2 * (i - 150) + 3))
-    #     obj.append((i, 50 + 2 * (i - 150) + 4))
-    #     obj.append((i, 50 + 2 * (i - 150) + 5))
     obj += generate_rect((110, 260), 30, 4)
     bkg = generate_rect((50, 10), 3, 115)
-
     return obj, bkg
 
 
-def make_pixels(image_url):
+def generate_scribbles_4_4():
+    obj = generate_interval((130, 50), (165, 200), 5)
+    obj += generate_rect((110, 260), 30, 4)
+    bkg = generate_rect((50, 10), 3, 115)
+    return obj, bkg
+
+
+def make_pixels(index, image_url):
     img = mpimg.imread('../images-320/' + image_url)
     img_shape = img.shape
-    # TODO switch: different scribbles for different images
-    obj_scribble, bkg_scribble = generate_banana1_scribbles()
-
+    obj_scribble, bkg_scribble = [], []
+    if 0 <= index <= 3:
+        obj_scribble, bkg_scribble = generate_scribbles_0_3()
+    elif index:
+        obj_scribble, bkg_scribble = generate_scribbles_4_4()
+    else:
+        obj_scribble, bkg_scribble = generate_scribbles_4_4()
     underlying_graph = image2graph(img, obj_scribble, bkg_scribble)
     start = time.time()
     flow = underlying_graph.dinic()
@@ -101,8 +103,8 @@ def analyze_all():
     directory = '../images-320'
     images = os.listdir(directory)
     images.sort()
-    for image_url in images:
-        make_pixels(image_url)
+    for idx, image_url in enumerate(images):
+        make_pixels(idx, image_url)
         true_segments = mpimg.imread('../image-segments-320/'+image_url.split('-')[0]+'-320.jpg')
         predicted_segments = mpimg.imread('../images-segments-prediction-320/'+image_url)
         true_segments = true_segments[:, :, :1].flatten().reshape(predicted_segments.shape)
