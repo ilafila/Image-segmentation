@@ -80,4 +80,4 @@ def analyze_all():
 
 
 # analyze_all()
-solo_test(5)
+solo_test(6)

@@ -45,12 +45,18 @@ def generate_scribbles_4():
     return obj, bkg
 
 def generate_scribbles_5():
-    obj = generate_rect((40, 55), 60, 3)
-    obj += generate_interval((98, 160), (131, 212), 3)
-    bkg = generate_rect((14, 47), 4, 69)
-    bkg += generate_rect((240, 78), 4, 69)
+    obj = generate_rect((281, 155), 60, 8)
+    obj += generate_interval((102, 147), (132, 200), 4)
+    bkg = generate_rect((114, 15), 5, 69)
+    bkg += generate_rect((257, 268), 99, 7)
+    return obj, bkg
+
+def generate_scribbles_6():
+    obj = generate_rect((71, 218), 60, 8)
+    obj += generate_interval((60, 113), (91, 166), 4)
+    bkg = generate_rect((114, 15), 5, 69)
     return obj, bkg
 
 
 scribbles = [generate_scribbles_0_3, generate_scribbles_0_3, generate_scribbles_0_3, generate_scribbles_0_3,
-             generate_scribbles_4, generate_scribbles_5]
+             generate_scribbles_4, generate_scribbles_5, generate_scribbles_6]
