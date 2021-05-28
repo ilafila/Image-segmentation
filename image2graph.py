@@ -12,8 +12,8 @@ def laplace(x):
 # TODO need to analyze for best params
 bins = 10
 step = math.ceil(256 / bins)
-lambda_const = 50
-sigma_const = 50
+# lambda_const = 50
+# sigma_const = 50
 epsilon = 1e-4
 K = 20000000
 
@@ -28,7 +28,7 @@ def generate_probs(img, interest):
     return hist
 
 
-def image2graph(img, obj, bkg):
+def image2graph(img, obj, bkg, lambda_const, sigma_const):
     number_of_nodes = len(img.ravel())
     number_of_rows = len(img)
     number_of_cols = len(img[0])
