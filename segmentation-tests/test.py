@@ -79,5 +79,5 @@ def analyze_all():
         print('--------------------------------------------------------')
 
 
-# analyze_all()
-solo_test(5)
+analyze_all()
+# solo_test(4)

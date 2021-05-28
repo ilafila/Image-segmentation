@@ -10,10 +10,10 @@ def laplace(x):
 # constants
 # TODO need to analyze for best params
 K = 2
-bins = 25
+bins = 20
 step = math.ceil(256 / bins)
-lambda_const = 200
-sigma_const = 100
+lambda_const = 50
+sigma_const = 10
 epsilon = 1e-7
 
 
@@ -54,8 +54,12 @@ def image2graph(img, obj, bkg):
                 graph.add_edge(obj_terminal, number_of_cols * i + j, 0)
                 graph.add_edge(number_of_cols*i + j, bkg_terminal, K)
             else:
-                R_obj = -np.log(obj_probs[img[i][j] // step] + epsilon)
-                R_bkg = -np.log(bkg_probs[img[i][j] // step] + epsilon)
+                condition_obj_prob = obj_probs[img[i][j] // step] \
+                                     / (obj_probs[img[i][j] // step] + bkg_probs[img[i][j] // step])
+                condition_bkg_prob = bkg_probs[img[i][j] // step] \
+                                     / (obj_probs[img[i][j] // step] + bkg_probs[img[i][j] // step])
+                R_obj = -np.log(min(condition_obj_prob + epsilon, 1))
+                R_bkg = -np.log(min(condition_bkg_prob + epsilon, 1))
                 graph.add_edge(obj_terminal, number_of_cols*i + j, lambda_const*R_bkg)
                 graph.add_edge(number_of_cols*i + j, bkg_terminal, lambda_const*R_obj)
             intensity = img[i][j]
