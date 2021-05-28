@@ -7,31 +7,24 @@ from Dinic import Graph
 def laplace(x):
     return erf(x/2**0.5)/2
 
+
 # constants
 # TODO need to analyze for best params
-K = 2
 bins = 10
 step = math.ceil(256 / bins)
-lambda_const = 5
-sigma_const = 1
-epsilon = 1e-7
+lambda_const = 50
+sigma_const = 50
+epsilon = 1e-4
+K = 20000000
 
 
 def generate_probs(img, interest):
     # определяем вероятности попадения в блоки гистограммы
     hist = [0] * bins
-    mu = 0
     for (x, y) in interest:
-        mu += img[x][y]
-    mu /= len(interest)
-    sigma = 0
-    for (x, y) in interest:
-        sigma += (img[x][y] - mu)**2
-    sigma = math.sqrt(sigma / (len(interest)-1))
+        hist[int(img[x][y] / step)] += 1
     for i in range(bins):
-        b = (step*(i+1) - mu) / sigma
-        a = (step*i - mu) / sigma
-        hist[i] = laplace(b) - laplace(a)
+        hist[i] /= len(interest)
     return hist
 
 
@@ -44,22 +37,18 @@ def image2graph(img, obj, bkg):
     obj_set = set(obj)
     bkg_set = set(bkg)
     obj_terminal, bkg_terminal = number_of_nodes, number_of_nodes+1
-    graph = Graph(n=number_of_nodes+2, source=number_of_nodes, target=number_of_nodes+1)
+    graph = Graph(n=number_of_nodes+2, source=obj_terminal, target=bkg_terminal)
     for i in range(number_of_rows):
         for j in range(number_of_cols):
             if (i, j) in obj_set:
                 graph.add_edge(obj_terminal, number_of_cols * i + j, K)
-                graph.add_edge(number_of_cols * i + j, bkg_terminal, 0)
+                graph.add_edge(number_of_cols * i + j, bkg_terminal, 1e-15)
             elif (i, j) in bkg_set:
                 graph.add_edge(obj_terminal, number_of_cols * i + j, 0)
                 graph.add_edge(number_of_cols*i + j, bkg_terminal, K)
             else:
-                condition_obj_prob = obj_probs[img[i][j] // step] \
-                                     / (obj_probs[img[i][j] // step] + bkg_probs[img[i][j] // step])
-                condition_bkg_prob = bkg_probs[img[i][j] // step] \
-                                     / (obj_probs[img[i][j] // step] + bkg_probs[img[i][j] // step])
-                R_obj = -np.log(min(condition_obj_prob + epsilon, 1))
-                R_bkg = -np.log(min(condition_bkg_prob + epsilon, 1))
+                R_obj = -np.log(min(obj_probs[img[i][j] // step] + epsilon, 1))
+                R_bkg = -np.log(min(bkg_probs[img[i][j] // step] + epsilon, 1))
                 graph.add_edge(obj_terminal, number_of_cols*i + j, lambda_const*R_bkg)
                 graph.add_edge(number_of_cols*i + j, bkg_terminal, lambda_const*R_obj)
             intensity = img[i][j]
