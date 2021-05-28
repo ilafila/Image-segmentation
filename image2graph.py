@@ -10,10 +10,10 @@ def laplace(x):
 # constants
 # TODO need to analyze for best params
 K = 2
-bins = 20
+bins = 10
 step = math.ceil(256 / bins)
-lambda_const = 50
-sigma_const = 10
+lambda_const = 5
+sigma_const = 1
 epsilon = 1e-7
 
 

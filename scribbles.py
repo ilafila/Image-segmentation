@@ -57,6 +57,81 @@ def generate_scribbles_6():
     bkg = generate_rect((114, 15), 5, 69)
     return obj, bkg
 
+def generate_scribbles_7():
+    obj = generate_rect((297, 152), 60, 8)
+    obj += generate_interval((39, 131), (61, 184), 4)
+    bkg = generate_rect((130, 267), 99, 7)
+    bkg += generate_rect((291, 29), 5, 69)
+    return obj, bkg
+
+def generate_scribbles_8():
+    obj = generate_rect((285, 91), 60, 8)
+    obj += generate_interval((156, 158), (180, 211), 4)
+    bkg = generate_rect((14, 27), 99, 7)
+    bkg += generate_rect((104, 299), 70, 5)
+    return obj, bkg
+
+def generate_scribbles_9():
+    obj = generate_rect((77, 128), 60, 8)
+    bkg = generate_rect((110, 18), 99, 7)
+    bkg += generate_rect((104, 299), 70, 5)
+    return obj, bkg
+
+def generate_scribbles_11():
+    obj = generate_rect((96, 150), 60, 8)
+    bkg = generate_rect((110, 18), 99, 7)
+    bkg += generate_rect((104, 299), 70, 5)
+    return obj, bkg
+
+def generate_scribbles_12():
+    obj = generate_rect((190, 175), 60, 8)
+    bkg = generate_rect((114, 79), 99, 7)
+    bkg += generate_rect((220, 285), 70, 5)
+    bkg += generate_rect((32, 50), 70, 5)
+    return obj, bkg
+
+def generate_scribbles_13():
+    obj = generate_rect((102, 122), 60, 14)
+    bkg = generate_rect((32, 39), 70, 5)
+    bkg += generate_rect((88, 280), 99, 7)
+    return obj, bkg
+
+def generate_scribbles_14():
+    obj = generate_rect((130, 141), 200, 14)
+    bkg = generate_rect((151, 273), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_15():
+    obj = generate_rect((30, 145), 160, 14)
+    bkg = generate_rect((60, 26), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_16():
+    obj = generate_rect((67, 165), 86, 8)
+    obj += generate_interval((207, 274), (232, 205), 8)
+    obj += generate_rect((185, 168), 4, 25)
+    bkg = generate_rect((75, 45), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_17():
+    obj = generate_rect((82, 168), 86, 8)
+    obj += generate_interval((225, 246), (235, 219), 8)
+    obj += generate_rect((232, 135), 4, 25)
+    bkg = generate_rect((75, 45), 99, 8)
+    return obj, bkg
+
+def generate_scribbles_18():
+    obj = generate_rect((138, 204), 25, 3)
+    obj += generate_interval((295, 168), (306, 142), 4)
+    obj += generate_rect((165, 125), 4, 19)
+    obj += generate_rect((213, 172), 4, 19)
+    bkg = generate_rect((204, 37), 99, 8)
+    bkg += generate_rect((17, 255), 99, 8)
+    return obj, bkg
+
 
 scribbles = [generate_scribbles_0_3, generate_scribbles_0_3, generate_scribbles_0_3, generate_scribbles_0_3,
-             generate_scribbles_4, generate_scribbles_5, generate_scribbles_6]
+             generate_scribbles_4, generate_scribbles_5, generate_scribbles_6, generate_scribbles_7,
+             generate_scribbles_8, generate_scribbles_9, generate_scribbles_9, generate_scribbles_11,
+             generate_scribbles_12, generate_scribbles_13, generate_scribbles_14, generate_scribbles_15,
+             generate_scribbles_16, generate_scribbles_17, generate_scribbles_18]
