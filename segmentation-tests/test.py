@@ -81,71 +81,79 @@ def analyze_all():
                 print('Мера Жаккара: ', Jaccard)
                 print('--------------------------------------------------------')
 
-def analyze_lambda():
-    array_of_lambdas = [1, 30, 100]
+def analyze_lambda(lambda_const):
     directory = '../images-320'
     images = os.listdir(directory)
     images.sort()
     results_of_correct_pixles = []
     results_of_jacard_metrics = []
-    for lambda_const in array_of_lambdas:
-        for idx, image_url in enumerate(images):
-            make_pixels(idx, image_url, lambda_const, 40)
-            true_segments = mpimg.imread('../image-segments-320/' + image_url.split('-')[0] + '-320.jpg')
-            predicted_segments = mpimg.imread('../images-segments-prediction-320/' + image_url)
-            true_segments = true_segments[:, :, :1].flatten().reshape(predicted_segments.shape)
-            correct_pixels, Jaccard = analyze(true_segments, predicted_segments)
-            # TODO write in file too
-            print('Правильно угаданных пикселей: ', correct_pixels)
-            print('Мера Жаккара: ', Jaccard)
-            print('--------------------------------------------------------')
-        file = open('../segmentation-tests/analyzeLambda.txt', 'w')
-        file.write('--------------------------------------------------------')
-        file.write('Значение лямбда: ' + str(lambda_const), '\n')
-        file.write('Минимальное значение правильно угаданных пикселей: ' + str(min(results_of_correct_pixles)), '\n')
-        file.write('Максимальное значение правильно угаданных пикселей: ' + str(max(results_of_correct_pixles)), '\n')
-        file.write('Среднее значение правильно угаданных пикселей: ' + str(
-            sum((int(results_of_correct_pixles[i]) for i in range(0, int(len(results_of_correct_pixles))))) / len(
-                results_of_correct_pixles)), '\n')
-        file.write('Минимальное значение меры Жаккара: ' + str(min(results_of_jacard_metrics)), '\n')
-        file.write('Максимальное значение меры Жаккара: ' + str(max(results_of_jacard_metrics)), '\n')
-        file.write('Среднее значение меры Жаккара: ' + str(
-            sum((int(results_of_jacard_metrics[i]) for i in range(0, int(len(results_of_jacard_metrics))))) / len(
-                results_of_jacard_metrics)), '\n')
+    for idx, image_url in enumerate(images):
+        make_pixels(idx, image_url, lambda_const, 40)
+        true_segments = mpimg.imread('../image-segments-320/' + image_url.split('-')[0] + '-320.jpg')
+        predicted_segments = mpimg.imread('../images-segments-prediction-320/' + image_url)
+        true_segments = true_segments[:, :, :1].flatten().reshape(predicted_segments.shape)
+        correct_pixels, Jaccard = analyze(true_segments, predicted_segments)
+        # TODO write in file too
+        print('Правильно угаданных пикселей: ', correct_pixels)
+        results_of_correct_pixles.append(correct_pixels)
+        print('Мера Жаккара: ', Jaccard)
+        results_of_jacard_metrics.append(Jaccard)
+        print('--------------------------------------------------------')
+    file = open('analyzeLambda'+str(lambda_const)+'.txt', 'w')
+    file.write('Значение лямбда: '+str(lambda_const)+' \n')
+    file.write('Минимальное значение правильно угаданных пикселей: '+str(min(results_of_correct_pixles))+' \n')
+    file.write('Максимальное значение правильно угаданных пикселей: '+str(max(results_of_correct_pixles))+' \n')
+    sum_pixels = 0
+    for i in results_of_correct_pixles:
+        sum_pixels += i
+    file.write('Среднее значение правильно угаданных пикселей: '+str(sum_pixels/len(results_of_correct_pixles))+' \n')
+    file.write('Минимальное значение меры Жаккара: '+str(min(results_of_jacard_metrics))+' \n')
+    file.write('Максимальное значение меры Жаккара: '+str(max(results_of_jacard_metrics))+' \n')
+    sum_jacard = 0
+    for j in results_of_jacard_metrics:
+        sum_jacard += j
+    file.write('Среднее значение меры Жаккара: '+str(sum_jacard/len(results_of_jacard_metrics)))
+    file.close()
 
-def analyze_sigma():
-    array_of_sigmas = [1, 40, 100]
+def analyze_sigma(sigma_const):
     directory = '../images-320'
     images = os.listdir(directory)
     images.sort()
-    for sigma_const in array_of_sigmas:
-        results_of_correct_pixles = []
-        results_of_jacard_metrics = []
-        for idx, image_url in enumerate(images):
-            make_pixels(idx, image_url, 30, sigma_const)
-            true_segments = mpimg.imread('../image-segments-320/' + image_url.split('-')[0] + '-320.jpg')
-            predicted_segments = mpimg.imread('../images-segments-prediction-320/' + image_url)
-            true_segments = true_segments[:, :, :1].flatten().reshape(predicted_segments.shape)
-            correct_pixels, Jaccard = analyze(true_segments, predicted_segments)
-            # TODO write in file too
-            print('Правильно угаданных пикселей: ', correct_pixels)
-            results_of_correct_pixles.append(correct_pixels)
-            print('Мера Жаккара: ', Jaccard)
-            results_of_jacard_metrics.append(Jaccard)
-            print('--------------------------------------------------------')
-        file = open('../segmentation-tests/analyzeSigma.txt', 'w')
-        file.write('--------------------------------------------------------')
-        file.write('Значение сигма: '+str(sigma_const), '\n')
-        file.write('Минимальное значение правильно угаданных пикселей: ' + str(min(results_of_correct_pixles)), '\n')
-        file.write('Максимальное значение правильно угаданных пикселей: ' + str(max(results_of_correct_pixles)), '\n')
-        file.write('Среднее значение правильно угаданных пикселей: ' + str(sum((int(results_of_correct_pixles[i]) for i in range(0, int(len(results_of_correct_pixles)))))/len(results_of_correct_pixles)), '\n')
-        file.write('Минимальное значение меры Жаккара: ' + str(min(results_of_jacard_metrics)), '\n')
-        file.write('Максимальное значение меры Жаккара: ' + str(max(results_of_jacard_metrics)), '\n')
-        file.write('Среднее значение меры Жаккара: ' + str(
-            sum((int(results_of_jacard_metrics[i]) for i in range(0, int(len(results_of_jacard_metrics))))) / len(
-                results_of_jacard_metrics)), '\n')
+    results_of_correct_pixles = []
+    results_of_jacard_metrics = []
+    for idx, image_url in enumerate(images):
+        make_pixels(idx, image_url, 30, sigma_const)
+        true_segments = mpimg.imread('../image-segments-320/' + image_url.split('-')[0] + '-320.jpg')
+        predicted_segments = mpimg.imread('../images-segments-prediction-320/' + image_url)
+        true_segments = true_segments[:, :, :1].flatten().reshape(predicted_segments.shape)
+        correct_pixels, Jaccard = analyze(true_segments, predicted_segments)
+        # TODO write in file too
+        print('Правильно угаданных пикселей: ', correct_pixels)
+        results_of_correct_pixles.append(correct_pixels)
+        print('Мера Жаккара: ', Jaccard)
+        results_of_jacard_metrics.append(Jaccard)
+        print('--------------------------------------------------------')
+    file = open('analyzeSigma' + str(sigma_const) + '.txt', 'w')
+    file.write('Значение сигма: ' + str(sigma_const) + ' \n')
+    file.write('Минимальное значение правильно угаданных пикселей: ' + str(min(results_of_correct_pixles)) + ' \n')
+    file.write('Максимальное значение правильно угаданных пикселей: ' + str(max(results_of_correct_pixles)) + ' \n')
+    sum_pixels = 0
+    for i in results_of_correct_pixles:
+        sum_pixels += i
+    file.write(
+        'Среднее значение правильно угаданных пикселей: ' + str(sum_pixels / len(results_of_correct_pixles)) + ' \n')
+    file.write('Минимальное значение меры Жаккара: ' + str(min(results_of_jacard_metrics)) + ' \n')
+    file.write('Максимальное значение меры Жаккара: ' + str(max(results_of_jacard_metrics)) + ' \n')
+    sum_jacard = 0
+    for j in results_of_jacard_metrics:
+        sum_jacard += j
+    file.write('Среднее значение меры Жаккара: ' + str(sum_jacard / len(results_of_jacard_metrics)))
+    file.close()
 
 
-analyze_lambda()
-analyze_sigma()
-
+# analyze_lambda(1)
+# analyze_lambda(30)
+# analyze_lambda(100)
+# analyze_sigma(1)
+# analyze_sigma(40)
+# analyze_sigma(100)
