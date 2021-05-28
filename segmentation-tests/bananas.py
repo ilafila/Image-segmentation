@@ -9,26 +9,50 @@ from image2graph import image2graph
 import os
 
 
+def generate_rect(corner, h, w):
+    rect = []
+    for i in range(h):
+        for j in range(w):
+            rect.append((corner[0]+i, corner[1]+j))
+    return rect
+
+
+def generate_interval(a, b, fat=1):
+    x0, y0 = a[0], a[1]
+    x1, y1 = b[0], b[1]
+    interval = []
+    deltax = abs(x1 - x0)
+    deltay = abs(y1 - y0)
+    error = 0
+    deltaerr = (deltay + 1)
+    y = y0
+    diry = y1 - y0
+    if diry > 0:
+        diry = 1
+    if diry < 0:
+        diry = -1
+    for x in range(x0, x1+1):
+        for j in range(fat):
+            interval.append((x, y+j))
+        error = error + deltaerr
+        if error >= (deltax + 1):
+            y = y + diry
+            error = error - (deltax + 1)
+    return interval
+
+
 def generate_banana1_scribbles():
     # эмитирует то, что мы отметили как фон и обьект
-    obj = []
-    for i in range(150, 185):
-        obj.append((i, 50 + 2 * (i - 150)))
-        obj.append((i, 50 + 2 * (i - 150) + 1))
-        obj.append((i, 50 + 2 * (i - 150) + 2))
-        obj.append((i, 50 + 2 * (i - 150) + 3))
-        obj.append((i, 50 + 2 * (i - 150) + 4))
-        obj.append((i, 50 + 2 * (i - 150) + 5))
-    for i in range(110, 150):
-        obj.append((i, 260))
-        obj.append((i, 261))
-        obj.append((i, 262))
-
-    bkg = []
-    for j in range(10, 125):
-        bkg.append((50, j))
-        bkg.append((51, j))
-        bkg.append((52, j))
+    obj = generate_interval((130, 50), (165, 200), 5)
+    # for i in range(150, 185):
+    #     obj.append((i, 50 + 2 * (i - 150)))
+    #     obj.append((i, 50 + 2 * (i - 150) + 1))
+    #     obj.append((i, 50 + 2 * (i - 150) + 2))
+    #     obj.append((i, 50 + 2 * (i - 150) + 3))
+    #     obj.append((i, 50 + 2 * (i - 150) + 4))
+    #     obj.append((i, 50 + 2 * (i - 150) + 5))
+    obj += generate_rect((110, 260), 30, 4)
+    bkg = generate_rect((50, 10), 3, 115)
 
     return obj, bkg
 
