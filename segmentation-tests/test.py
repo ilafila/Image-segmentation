@@ -6,18 +6,17 @@ import matplotlib.image as mpimg
 from Dinic import Graph
 from PIL import Image
 from image2graph import image2graph
-from scribbles import scribbles
+from scribbles import generate_rect, scribbles
 import os
 
 
-def make_pixels(index, image_url, lambda_const, sigma_const):
+def make_pixels(index, image_url, **kvargs):
     img = mpimg.imread('../images-320/' + image_url)
     img_shape = img.shape
     obj_scribble, bkg_scribble = scribbles[index]()
-    underlying_graph = image2graph(img, obj_scribble, bkg_scribble, lambda_const, sigma_const)
+    image_graph = image2graph(img, obj_scribble, bkg_scribble, **kvargs)
     start = time.time()
-    flow = underlying_graph.dinic()
-    one_item = underlying_graph.min_cut()
+    one_item = image_graph.min_cut()
     end = time.time()
     print('percent of object: ', sum(one_item)/(img_shape[1]*img_shape[0]) * 100)
     print("Time in seconds", "%.3f" % (end - start))
@@ -61,25 +60,19 @@ def analyze(true_segments, predicted_segments):
 
 
 def analyze_all():
-    array_of_lambdas = [1, 30, 100]
-    array_of_sigmas = [1, 40, 100]
     directory = '../images-320'
     images = os.listdir(directory)
     images.sort()
-    results_of_correct_pixles = []
-    results_of_jacard_metrics = []
     for idx, image_url in enumerate(images):
-        for lambda_const in array_of_lambdas:
-            for sigma_const in array_of_sigmas:
-                make_pixels(idx, image_url, lambda_const, sigma_const)
-                true_segments = mpimg.imread('../image-segments-320/' + image_url.split('-')[0] + '-320.jpg')
-                predicted_segments = mpimg.imread('../images-segments-prediction-320/' + image_url)
-                true_segments = true_segments[:, :, :1].flatten().reshape(predicted_segments.shape)
-                correct_pixels, Jaccard = analyze(true_segments, predicted_segments)
-                # TODO write in file too
-                print('Правильно угаданных пикселей: ', correct_pixels)
-                print('Мера Жаккара: ', Jaccard)
-                print('--------------------------------------------------------')
+        print(image_url)
+        make_pixels(idx, image_url)
+        true_segments = mpimg.imread('../image-segments-320/' + image_url.split('-')[0] + '-320.jpg')
+        predicted_segments = mpimg.imread('../images-segments-prediction-320/' + image_url)
+        true_segments = true_segments[:, :, :1].flatten().reshape(predicted_segments.shape)
+        correct_pixels, Jaccard = analyze(true_segments, predicted_segments)
+        print('Правильно угаданных пикселей: ', correct_pixels)
+        print('Мера Жаккара: ', Jaccard)
+        print('--------------------------------------------------------')
 
 
 def analyze_lambda_and_sigma(lambdas, sigmas):
@@ -110,7 +103,7 @@ def analyze_lambda_and_sigma(lambdas, sigmas):
             for i in results_of_correct_pixles:
                 sum_pixels += i
             file.write('Среднее значение правильно угаданных пикселей: '+str(sum_pixels/len(results_of_correct_pixles))+' \n')
-            
+
             file.write('Минимальное значение меры Жаккара: '+str(min(results_of_jacard_metrics))+' \n')
             file.write('Максимальное значение меры Жаккара: '+str(max(results_of_jacard_metrics))+' \n')
             sum_jacard = 0
@@ -120,4 +113,47 @@ def analyze_lambda_and_sigma(lambdas, sigmas):
             file.close()
 
 
-analyze_lambda_and_sigma([1, 30, 100], [1, 40, 100])
+def interactive_segmentation(image_url):
+    img = mpimg.imread('../interactive-images/' + image_url)
+    img_shape = img.shape
+    print('Введите прямоугольник, относящийся к объекту')
+    obj_x0, obj_y0, obj_h, obj_w = list(map(int, input().split()))
+    print('Введите прямоугольник, относящийся к фону')
+    bkg_x0, bkg_y0, bkg_h, bkg_w = list(map(int, input().split()))
+    obj_scribble, bkg_scribble = generate_rect((obj_x0, obj_y0), obj_h, obj_w), \
+                                 generate_rect((bkg_x0, bkg_y0), bkg_h, bkg_w),
+    image_graph = image2graph(img, obj_scribble, bkg_scribble)
+    to_obj = image_graph.min_cut()
+    bin_img = Image.new(mode='1', size=(img_shape[1], img_shape[0]), color=0)
+    for i, val in enumerate(to_obj):
+        if val:
+            bin_img.putpixel((i % img_shape[1], i // img_shape[1]), 1)
+    bin_img.save('../interactive-images-segments-prediction-320/' + image_url, 'JPEG')
+    cont = True
+    while cont:
+        print("Введите дополнительный пиксели в формате: 'obj/bkg/stop x0 y0 h w'")
+        inp = input()
+        command = inp.split()[0]
+        if command == 'stop':
+            cont = False
+            break
+        else:
+            x0, y0, h, w = list(map(int, inp.split()[1:]))
+            pixels = generate_rect((x0, y0), h, w)
+            for pixel in pixels:
+                if command == 'obj':
+                    image_graph.change_to_obj(pixel)
+                elif command == 'bkg':
+                    image_graph.change_to_bkg(pixel)
+        one_item = image_graph.min_cut()
+        bin_img = Image.new(mode='1', size=(img_shape[1], img_shape[0]), color=0)
+        for i, val in enumerate(one_item):
+            if val:
+                bin_img.putpixel((i % img_shape[1], i // img_shape[1]), 1)
+        bin_img.save('../interactive-images-segments-prediction-320/' + image_url, 'JPEG')
+
+
+# interactive_segmentation('banana1-gr-320.jpg')
+# analyze_lambda_and_sigma([1, 30, 100], [1, 40, 100])
+# analyze_all()
+# solo_test(11)

@@ -12,6 +12,9 @@ class Edge:
         self.cap = capacity
         self.flow = flow
 
+    def add_capacity(self, plus_cap):
+        self.cap += plus_cap
+
 
 class Graph:
     def __init__(self, n, source, target):
@@ -33,6 +36,13 @@ class Graph:
         self.e.append(e1)
         self.g[b].append(len(self.e))
         self.e.append(e2)
+
+    def add_to_edge(self, v, to, cap):
+        for i in range(len(self.g[v])):
+            id = self.g[v][i]
+            if to == self.e[id].b:
+                self.e[id].add_capacity(cap)
+        return 0
 
     def bfs(self):
         qh = 1
